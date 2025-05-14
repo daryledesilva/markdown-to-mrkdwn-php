@@ -4,7 +4,7 @@ Convert standard Markdown to Slack's `mrkdwn` format in PHP.
 
 ## 💡 What is this?
 
-A PHP 8.4+ package that transforms common Markdown syntax (bold, italic, links, lists, etc.) into Slack's `mrkdwn` format. Useful when rendering Markdown in Slack messages, bots, or webhooks.
+A PHP 7.4+ package that transforms common Markdown syntax (bold, italic, links, lists, etc.) into Slack's `mrkdwn` format. Useful when rendering Markdown in Slack messages, bots, or webhooks.
 
 ## ✨ Features
 
@@ -17,7 +17,7 @@ A PHP 8.4+ package that transforms common Markdown syntax (bold, italic, links, 
 
 ## 🛠 Requirements
 
-* PHP 8.4 or higher
+* PHP 7.4 or higher
 
 ## 📦 Installation
 
