@@ -28,7 +28,7 @@ composer require daryledesilva/markdown-to-mrkdwn-php
 ## 🚀 Usage
 
 ```php
-use MarkdownToMrkdwn\Converter;
+use DaryleDeSilva\MarkdownToMrkdwn\Converter;
 
 $converter = new Converter();
 echo $converter->convert("**Hello**, [Slack](https://slack.com)!");

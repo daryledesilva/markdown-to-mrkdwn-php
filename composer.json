@@ -13,7 +13,7 @@
   },
   "autoload": {
     "psr-4": {
-      "MarkdownToMrkdwn\\": "src/"
+      "DaryleDeSilva\\MarkdownToMrkdwn\\": "src/"
     }
   },
   "scripts": {

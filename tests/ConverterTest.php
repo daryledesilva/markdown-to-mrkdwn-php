@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use MarkdownToMrkdwn\Converter;
+use DaryleDeSilva\MarkdownToMrkdwn\Converter;
 
 class ConverterTest extends TestCase
 {

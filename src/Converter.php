@@ -1,6 +1,6 @@
 <?php
 
-namespace MarkdownToMrkdwn;
+namespace DaryleDeSilva\MarkdownToMrkdwn;
 
 class Converter
 {
