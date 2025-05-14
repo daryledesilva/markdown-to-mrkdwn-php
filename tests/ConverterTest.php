@@ -53,4 +53,38 @@ class ConverterTest extends TestCase
         $converter = new Converter();
         $this->assertEquals('Tom &amp; Jerry &lt;3', $converter->convert('Tom & Jerry <3'));
     }
+
+    public function testMarkdownToMrkdwnWithMixedFormatting()
+    {
+        $converter = new Converter();
+
+        // Input with both italic and bold text
+        $input = "This booking was canceled using the *Quick Cancel* button by **Charlotte Sun**.";
+
+        // Expected output after transformations
+        $expected = "This booking was canceled using the _Quick Cancel_ button by *Charlotte Sun*.";
+
+        // Apply the conversion function
+        $output = $converter->convert($input);
+
+        // Assert that the output matches the expected result
+        $this->assertEquals($expected, $output);
+    }
+
+    public function testMarkdownToMrkdwnWithBoldItalicAndBlockquote()
+    {
+        $converter = new Converter();
+
+        // Input with bold, italic, and blockquote
+        $input = "The given booking was rejected by **Charlotte Sun**.\n> *No availability - informed partner*";
+
+        // Expected output after transformations
+        $expected = "The given booking was rejected by *Charlotte Sun*.\n> _No availability - informed partner_";
+
+        // Apply the conversion function
+        $output = $converter->convert($input);
+
+        // Assert that the output matches the expected result
+        $this->assertEquals($expected, $output);
+    }
 }
