@@ -8,19 +8,40 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php-version: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]  # Testing with PHP 7.4 to 8.5
+
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.4'
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Run tests
-      run: composer test
+      - name: Install PHPUnit
+        run: |
+          if [ "${{ matrix.php-version }}" == "7.4" ]; then
+            composer require --dev phpunit/phpunit:^9.5;
+          elif [ "${{ matrix.php-version }}" == "8.0" ]; then
+            composer require --dev phpunit/phpunit:^9.5;
+          elif [ "${{ matrix.php-version }}" == "8.1" ]; then
+            composer require --dev phpunit/phpunit:^9.5;
+          elif [ "${{ matrix.php-version }}" == "8.2" ]; then
+            composer require --dev phpunit/phpunit:^9.5;
+          elif [ "${{ matrix.php-version }}" == "8.3" ]; then
+            composer require --dev phpunit/phpunit:^10.0;
+          elif [ "${{ matrix.php-version }}" == "8.4" ]; then
+            composer require --dev phpunit/phpunit:^10.0;
+          elif [ "${{ matrix.php-version }}" == "8.5" ]; then
+            composer require --dev phpunit/phpunit:^10.0;
+          fi
+
+      - name: Run tests
+        run: composer test
