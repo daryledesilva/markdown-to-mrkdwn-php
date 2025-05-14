@@ -1,0 +1,22 @@
+# Composer dependencies
+/vendor/
+
+# PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+/.phpunit.result.cache
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Cache
+.cache/
+
