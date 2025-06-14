@@ -1,0 +1,10 @@
+parameters:
+    # Static analysis level (0-9). Level 5 is a good balance.
+    level: 5
+    paths:
+        - src
+
+    ignoreErrors:
+        - '#Property .*\\$encoding is never read, only written\.#'
+        - '#Empty array passed to foreach\.#'
+    reportUnmatchedIgnoredErrors: false

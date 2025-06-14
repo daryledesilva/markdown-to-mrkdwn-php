@@ -11,9 +11,44 @@ A PHP 7.4+ package that transforms common Markdown syntax (bold, italic, links, 
 * Converts `**bold**` to `*bold*`
 * Converts `_italic_` or `*italic*` to `_italic_`
 * Converts `[text](url)` to `<url|text>`
-* Supports inline code and code blocks
-* Handles blockquotes and lists
+* Supports inline code and preserves code blocks (with language fences)
+* Converts headings (`# Heading` … `###### Heading`) to `*Heading*`
+* Converts `~~strikethrough~~` to `~strikethrough~`
+* Converts task lists (`- [ ]` / `- [x]`) to `• ☐` / `• ☑`
+* Handles unordered & ordered lists (including nested lists)
+* Converts horizontal rules (`---`, `***`, `___`) to `──────────`
+* Converts tables into Slack-style tables (bolds headers)
+* Handles blockquotes (`> quote`)
 * Escapes Slack-reserved characters like `&`, `<`, and `>`
+
+## 🔌 Plugin System
+
+You can extend the converter with custom plugins (global, line or block scope):
+
+```php
+use DaryleDeSilva\MarkdownToMrkdwn\Converter;
+
+$converter = new Converter();
+
+// Global plugin (runs on full text)
+$converter->registerPlugin(
+    'addQuotes',
+    fn(string $text) => "\"{$text}\"",
+    priority: 10,
+    scope: 'global'
+);
+
+// Line plugin (before standard conversion)
+$converter->registerPlugin(
+    'linePrefix',
+    fn(string $line) => "[LINE] {$line}",
+    priority: 20,
+    scope: 'line',
+    timing: 'before'
+);
+
+echo $converter->convert("**Hello**, world!");
+```
 
 ## 🛠 Requirements
 
