@@ -6,6 +6,7 @@ class Converter
 {
     private string $encoding;
     private bool $inCodeBlock = false;
+    private bool $inIndentBlock = false;
     private array $tableReplacements = [];
     private array $patterns = [];
     private array $plugins = [];
@@ -30,13 +31,8 @@ class Converter
             '/!\[.*?\]\((.+?)\)/m'        => '<$1>',
             // Italic
             '/(?<!\*)\*([^*\n]+?)\*(?!\*)/m' => '_$1_',
-            // Headings
-            '/^###### (.+)$/m'            => '*$1*',
-            '/^##### (.+)$/m'             => '*$1*',
-            '/^#### (.+)$/m'              => '*$1*',
-            '/^### (.+)$/m'               => '*$1*',
-            '/^## (.+)$/m'                => '*$1*',
-            '/^# (.+)$/m'                 => '*$1*',
+            // Headings (1 to 6 hashes)
+            '/^(#{1,6})\s*(.+)$/m'         => '*$2*',
             // Bold with surrounding spaces
             '/(^|\s)~\*\*(.+?)\*\*(\s|$)/m' => '$1 *$2* $3',
             // Bold
@@ -160,8 +156,10 @@ class Converter
 
             $outLines = [];
             foreach ($lines as $line) {
-                if (substr($line, 0, strlen('%%TABLE_PLACEHOLDER_')) === '%%TABLE_PLACEHOLDER_'
-                    && substr($line, -2) === '%%') {
+                if (
+                    substr($line, 0, strlen('%%TABLE_PLACEHOLDER_')) === '%%TABLE_PLACEHOLDER_'
+                    && substr($line, -2) === '%%'
+                ) {
                     $outLines[] = $line;
                     continue;
                 }
@@ -225,12 +223,27 @@ class Converter
     /** Convert a single line of Markdown. */
     private function convertLine(string $line): string
     {
+        // Code fence start/end
         if (preg_match('/^```(\w*)$/', $line, $m)) {
             $this->inCodeBlock = !$this->inCodeBlock;
             return $this->inCodeBlock && $m[1] !== '' ? "```{$m[1]}" : '```';
         }
+
         if ($this->inCodeBlock) {
             return $line;
+        }
+
+        // Indented code block (4 spaces or a tab)
+        if (!$this->inIndentBlock && preg_match('/^(?: {4}|\t)/', $line)) {
+            $this->inIndentBlock = true;
+            return $line;
+        }
+        if ($this->inIndentBlock && preg_match('/^(?: {4}|\t)/', $line)) {
+            return $line;
+        }
+        if ($this->inIndentBlock) {
+            // Exit from indented code block
+            $this->inIndentBlock = false;
         }
         $line = preg_replace_callback(
             '/(?<!\*)\*\*\*([^*\n]+?)\*\*\*(?!\*)/',
