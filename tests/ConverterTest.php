@@ -109,7 +109,8 @@ class ConverterTest extends TestCase
     public function testImages()
     {
         $converter = new Converter();
-        $this->assertEquals('<http://example.com/img.png>',
+        $this->assertEquals(
+            '<http://example.com/img.png>',
             $converter->convert('![alt](http://example.com/img.png)')
         );
     }
@@ -169,5 +170,15 @@ class ConverterTest extends TestCase
         $converter->registerPlugin('before', fn($l) => "[B]$l", 10, 'line', 'before');
         $converter->registerPlugin('after', fn($l) => "{$l}[A]", 10, 'line', 'after');
         $this->assertEquals('[B]*bold*[A]', $converter->convert('**bold**'));
+    }
+
+    /** @test Block-scope plugin runs once on entire text. */
+    public function testBlockScopePlugin()
+    {
+        $converter = new Converter();
+        $converter->registerPlugin('wrap', fn(string $text) => "START\n{$text}\nEND", 10, 'block');
+        $input = "One\nTwo";
+        $expected = "START\nOne\nTwo\nEND";
+        $this->assertEquals($expected, $converter->convert($input));
     }
 }

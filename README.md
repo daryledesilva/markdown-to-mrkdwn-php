@@ -1,25 +1,52 @@
 # markdown-to-mrkdwn-php
 
-Convert standard Markdown to Slack's `mrkdwn` format in PHP.
+[![Packagist Version](https://img.shields.io/packagist/v/daryledesilva/markdown-to-mrkdwn-php.svg?style=flat-square)](https://packagist.org/packages/daryledesilva/markdown-to-mrkdwn-php)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
+A lightweight, dependency-free PHP library for converting Markdown into Slack-compatible mrkdwn. It preserves code blocks, handles tables, blockquotes, lists, and more for seamless Slack messaging.
 
 ## 💡 What is this?
 
-A PHP 7.4+ package that transforms common Markdown syntax (bold, italic, links, lists, etc.) into Slack's `mrkdwn` format. Useful when rendering Markdown in Slack messages, bots, or webhooks.
+An easy-to-use, dependency-free PHP 7.4+ library that converts Markdown—headings, text formatting, lists, tables, blockquotes, and code blocks—into Slack’s mrkdwn format. Ideal for bots, integrations, or any app sending rich text to Slack.
 
 ## ✨ Features
 
-* Converts `**bold**` to `*bold*`
-* Converts `_italic_` or `*italic*` to `_italic_`
-* Converts `[text](url)` to `<url|text>`
-* Supports inline code and preserves code blocks (with language fences)
-* Converts headings (`# Heading` … `###### Heading`) to `*Heading*`
-* Converts `~~strikethrough~~` to `~strikethrough~`
-* Converts task lists (`- [ ]` / `- [x]`) to `• ☐` / `• ☑`
-* Handles unordered & ordered lists (including nested lists)
-* Converts horizontal rules (`---`, `***`, `___`) to `──────────`
-* Converts tables into Slack-style tables (bolds headers)
-* Handles blockquotes (`> quote`)
-* Escapes Slack-reserved characters like `&`, `<`, and `>`
+```md
+- Headings (H1–H6 → `*Heading*`)
+- Text formatting:
+  - Bold (`**bold**` → `*bold*`)
+  - Italic (`*italic*` or `_italic_` → `_italic_`)
+  - Strikethrough (`~~strike~~` → `~strike~`)
+- Lists:
+  - Unordered & ordered (with nesting)
+  - Task lists (`- [ ]` / `- [x]` → `• ☐` / `• ☑`)
+- Tables (simple text tables with bold headers)
+- Links & images:
+  - `[text](url)` → `<url|text>`
+  - `![alt](url)` → `<url>`
+- Code:
+  - Inline `` `code` ``
+  - Fenced code blocks (```…```), preserving language hint
+- Blockquotes (`> quote`)
+- Horizontal rules (`---`, `***`, `___` → `──────────`)
+```
+## 📋 Supported Conversions
+
+| Markdown                   | Slack mrkdwn             |
+|----------------------------|--------------------------|
+| `# Heading`                | `*Heading*`              |
+| `**Bold**`                 | `*Bold*`                 |
+| `*Italic*` / `_Italic_`     | `_Italic_`               |
+| `~~Strike~~`               | `~Strike~`               |
+| `- [ ] Task`               | `• ☐ Task`               |
+| `- [x] Task`               | `• ☑ Task`               |
+| `- Item` / `1. Item`       | `• Item` / `1. Item`     |
+| `` `Inline code` ``        | `` `Inline code` ``      |
+| ```lang                    | ```lang                  |
+| code                       | code                     |
+| ```                        | ```                      |
+| `> Quote`                  | `> Quote`                |
+| `---` / `***` / `___`      | `──────────`             |
 
 ## 🔌 Plugin System
 
@@ -50,6 +77,32 @@ $converter->registerPlugin(
 echo $converter->convert("**Hello**, world!");
 ```
 
+### Advanced plugin examples
+
+```php
+// Function plugin: convert entire text to uppercase
+$converter->registerPlugin(
+    name: 'toUpper',
+    converter_func: fn(string $text) => strtoupper($text),
+    priority: 10,
+    scope: 'line',
+    timing: 'after'
+);
+
+// Regex plugin: mask email addresses
+$converter->registerRegexPlugin(
+    name: 'maskEmails',
+    pattern: '/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+/',
+    replacement: '[EMAIL]',
+    priority: 20,
+    timing: 'after'
+);
+```
+
+### Error handling
+
+If an error occurs during conversion, the original Markdown text is returned unmodified.
+
 ## 🛠 Requirements
 
 * PHP 7.4 or higher
@@ -76,10 +129,17 @@ composer install
 composer test
 ```
 
+## 🔗 Testing in Slack
+
+You can preview the converted mrkdwn in Slack’s Block Kit Builder:  
+[https://app.slack.com/block-kit-builder/](https://app.slack.com/block-kit-builder/)
+
 ## 📄 License
 
 MIT
 
 ---
+
+Inspired by the original Python package [markdown_to_mrkdwn](https://github.com/fla9ua/markdown_to_mrkdwn).
 
 Created by [@daryledesilva](https://github.com/daryledesilva)
