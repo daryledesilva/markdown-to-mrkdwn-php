@@ -140,4 +140,6 @@ MIT
 
 ---
 
+Inspired by the original Python package [markdown_to_mrkdwn](https://github.com/fla9ua/markdown_to_mrkdwn).
+
 Created by [@daryledesilva](https://github.com/daryledesilva)
